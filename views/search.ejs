@@ -1,0 +1,13 @@
+<%- include('partials/head') %>
+<%- include('partials/crumbs', { crumbs: [['Форум', '/'], ['Поиск']] }) %>
+<h1>Поиск</h1>
+<form class="card pad stack" style="margin-top:12px"><div class="inl"><input name="q" value="<%= q %>" placeholder="Что ищем?" maxlength="80" style="flex:1;min-width:200px"><select name="type" style="width:auto"><option value="threads" <%= type === 'threads' ? 'selected' : '' %>>Темы</option><option value="posts" <%= type === 'posts' ? 'selected' : '' %>>Сообщения</option><option value="users" <%= type === 'users' ? 'selected' : '' %>>Пользователи</option></select><button class="btn">Найти</button></div>
+<details <%= (sec || author || from || to) ? 'open' : '' %>><summary class="muted">Фильтры</summary><div class="inl" style="margin-top:8px"><select name="section" style="width:auto"><option value="">Все разделы</option><% sections.forEach(function (s) { %><option value="<%= s.id %>" <%= s.id === sec ? 'selected' : '' %>><%= s.title %></option><% }) %></select>
+<input name="author" value="<%= author %>" placeholder="Автор" style="max-width:160px"><label class="inline">с <input type="date" name="from" value="<%= from %>"></label><label class="inline">по <input type="date" name="to" value="<%= to %>"></label></div></details></form>
+<% if (searched) { %><section class="card"><h2>Результаты: <%= pg.total %></h2><div class="rows"><% if (!rows.length) { %><div class="empty">Ничего не найдено. Попробуйте другой запрос.</div><% } %>
+<% rows.forEach(function (x) { if (type === 'users') { %><a class="row" href="/u/<%= encodeURIComponent(x.username) %>"><div class="main"><div class="t"><%= x.username %></div></div><div class="col">Сообщений: <b><%= x.post_count %></b></div></a>
+<% } else if (type === 'threads') { %><a class="row" href="/t/<%= x.id %>"><div class="main"><div class="t"><%= x.title %></div><div class="muted small"><%= x.st %> · <%= x.username %> · <%= ago(x.created_at) %></div></div><div class="col">Ответов: <b><%= x.replies %></b></div></a>
+<% } else { %><a class="row" href="/t/<%= x.tid %>?p=<%= x.id %>#post-<%= x.id %>"><div class="main"><div class="t"><%= x.title %></div><div class="muted small"><%= x.body.slice(0, 160) %></div><div class="muted small"><%= x.username %> · <%= x.st %> · <%= ago(x.created_at) %></div></div></a><% } }) %></div></section>
+<%- include('partials/pager', { pg, base: '/search?type=' + type + '&q=' + encodeURIComponent(q) + '&section=' + (sec || '') + '&author=' + encodeURIComponent(author) + '&from=' + from + '&to=' + to }) %>
+<% } else { %><div class="empty">Введите минимум 2 символа.</div><% } %>
+<%- include('partials/foot') %>

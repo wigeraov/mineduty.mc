@@ -1,0 +1,31 @@
+{
+  "name": "mineduty-forum",
+  "version": "1.0.0",
+  "description": "Игровой форум MineDuty (Express + SQLite)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "create-founder": "node scripts/create-founder.js",
+    "seed-demo": "node scripts/seed-demo.js",
+    "test": "node --test --test-concurrency=1 test/*.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^13.0.3",
+    "ejs": "^7.0.2",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.1",
+    "express-session": "^1.19.0",
+    "helmet": "^8.3.0",
+    "multer": "^2.5.0",
+    "nodemailer": "^10.2.1"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  }
+}

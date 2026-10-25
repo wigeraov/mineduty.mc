@@ -1,0 +1,7 @@
+<div class="toolbar" role="toolbar" aria-label="Форматирование">
+  <button type="button" data-bb="b"><b>B</b></button><button type="button" data-bb="i"><i>I</i></button><button type="button" data-bb="u"><u>U</u></button><button type="button" data-bb="s"><s>S</s></button>
+  <button type="button" data-bb="quote">❝</button><button type="button" data-bb="code">&lt;/&gt;</button><button type="button" data-bb="spoiler">Спойлер</button><button type="button" data-bb="url">🔗</button>
+  <button type="button" data-bb-img>🖼 Картинка</button><input type="file" id="img-file" accept="image/png,image/jpeg,image/gif,image/webp" hidden>
+</div>
+<textarea name="body" data-editor data-draft="<%= draft %>" rows="<%= typeof rows !== 'undefined' ? rows : 8 %>" maxlength="20000" required><%= typeof value !== 'undefined' ? value : '' %></textarea>
+<div class="muted small">Поддерживается BBCode: [b] [i] [u] [s] [quote] [code] [spoiler] [url] и упоминания @ник.</div>

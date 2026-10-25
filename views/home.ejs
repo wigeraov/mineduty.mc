@@ -1,0 +1,29 @@
+<%- include('partials/head', { desc: site.tagline }) %>
+<section class="hero"><div class="big">⛏️</div>
+  <h1><%= site.site_name %> · добро пожаловать</h1>
+  <p>Обсуждайте сервер, подавайте жалобы и заявки, ищите союзников. Первое слово в игре, первое слово на форуме.</p>
+  <div class="inl"><% if (site.server_ip) { %><code><%= site.server_ip %></code><% } %>
+  <% if (!me) { %><a class="btn" href="/register">Присоединиться</a><% } else { %><a class="btn" href="<%= sectionLink('Новости проекта') %>">Новости проекта</a><% } %>
+  <% if (site.discord) { %><a class="btn sec" href="<%= site.discord %>" rel="noopener">Discord</a><% } %></div></section>
+<div class="grid"><div>
+<% if (news.length) { %><section class="card"><h2>📢 Новости проекта</h2><% news.forEach(function (n) { %><div class="news-i"><b><%= n.title %></b> <span class="muted small">· <%= ago(n.created_at) %> · <%= n.username %></span><div><%= n.body %></div></div><% }) %></section><% } %>
+<% cats.forEach(function (c) { var list = secs.filter(function (s) { return s.category_id === c.id; }); if (!list.length) return; %>
+<section class="card"><h2><%= c.title %></h2><div class="rows">
+<% list.forEach(function (s) { var l = lasts[s.last_id]; %>
+<a class="row" href="/s/<%= s.id %>"><div class="ico"><%= s.icon %></div><div class="main"><div class="t"><%= s.title %><% if (s.view_min > 0) { %> <span class="tag lock">🔒</span><% } %></div><div class="muted small"><%= s.description %></div></div>
+<div class="col">Тем: <b><%= s.tc %></b>Сообщений: <b><%= s.pc %></b></div>
+<div class="col w"><% if (l) { %><b><%= l.title %></b><%= l.lu || '' %> · <%= ago(l.last_post_at) %><% } else { %>Пока пусто<% } %></div></a>
+<% }) %></div></section><% }) %>
+<section class="card"><h2>🕒 Последние обсуждения</h2><div class="rows">
+<% if (!latest.length) { %><div class="empty">Тем пока нет. Создайте первую!</div><% } %>
+<% latest.forEach(function (t) { %><a class="row" href="/t/<%= t.id %>"><div class="main"><div class="t"><% if (t.pinned) { %><span class="tag pin">📌</span><% } %><%= t.title %></div><div class="muted small"><%= t.st %> · <%- nick(t.username, (rm[t.uid] || [])[0]) %> · <%= ago(t.last_post_at) %></div></div><div class="col">Ответов: <b><%= t.replies %></b></div></a><% }) %></div></section>
+</div>
+<aside class="aside">
+<section class="card"><h2>Статистика</h2><div class="stats"><div class="stat"><b><%= stats.users %></b><span class="muted small">польз.</span></div><div class="stat"><b><%= stats.threads %></b><span class="muted small">тем</span></div><div class="stat"><b><%= stats.posts %></b><span class="muted small">сообщ.</span></div></div>
+<% if (stats.newest) { %><div class="list muted small">Новый участник: <%- nick(stats.newest.username, (rm[stats.newest.id] || [])[0]) %></div><% } %></section>
+<section class="card"><h2>🟢 Онлайн (<%= online.length %>)</h2><div class="list"><% if (!online.length) { %><span class="muted small">Никого нет.</span><% } %><% online.forEach(function (u, i) { %><%- nick(u.username, (rm[u.id] || [])[0]) %><%= i < online.length - 1 ? ', ' : '' %><% }) %></div></section>
+<section class="card"><h2>🔥 Популярные темы</h2><div class="list"><ul><% popular.forEach(function (t) { %><li><a href="/t/<%= t.id %>"><%= t.title %></a><div class="muted small">👁 <%= t.views %> · 💬 <%= t.replies %></div></li><% }) %></ul></div></section>
+<section class="card"><h2>💬 Последние сообщения</h2><div class="list"><ul><% posts.forEach(function (p) { %><li><a href="/t/<%= p.thread_id %>?p=<%= p.id %>#post-<%= p.id %>"><%= p.title %></a><div class="muted small"><%- nick(p.username, (rm[p.user_id] || [])[0]) %> · <%= ago(p.created_at) %></div></li><% }) %></ul></div></section>
+<section class="card"><h2>Ссылки</h2><div class="list"><ul><li><a href="<%= sectionLink('Правила проекта') %>">📜 Правила проекта</a></li><li><a href="<%= sectionLink('Заявления на пост') %>">🛡️ Заявления на пост</a></li><% if (site.discord) { %><li><a href="<%= site.discord %>" rel="noopener">💬 Связь с администрацией (Discord)</a></li><% } %></ul></div></section>
+</aside></div>
+<%- include('partials/foot') %>

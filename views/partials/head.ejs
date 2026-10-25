@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru" style="--accent:<%= site.accent %>">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="csrf" content="<%= csrf %>">
+<title><%= title ? title + ' – ' : '' %><%= site.site_name %></title>
+<meta name="description" content="<%= typeof desc !== 'undefined' ? desc : site.tagline %>">
+<meta property="og:title" content="<%= title || site.site_name %>"><meta property="og:site_name" content="<%= site.site_name %>"><meta property="og:type" content="website">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <a class="logo" href="/"><%= site.site_name.toUpperCase() %></a>
+  <button class="iconbtn burger" data-toggle="nav" aria-label="Меню">☰</button>
+  <nav id="nav">
+    <a href="/" class="<%= path === '/' ? 'on' : '' %>">Форум</a>
+    <a href="/members" class="<%= path === '/members' ? 'on' : '' %>">Пользователи</a>
+    <a href="<%= sectionLink('Правила проекта') %>">Правила</a>
+    <% if (can('admin.access')) { %><a href="/admin">Панель</a><% } %>
+  </nav>
+  <form class="sb" action="/search" role="search"><input name="q" placeholder="Поиск по форуму" maxlength="80" aria-label="Поиск"></form>
+  <div class="acts">
+  <% if (me) { %>
+    <div class="dd"><button class="iconbtn" data-dd="notif" aria-label="Уведомления">🔔<% if (unread) { %><span class="dot"><%= unread > 99 ? '99+' : unread %></span><% } %></button>
+      <div class="dd-panel"><div id="notif-list" class="muted pad">Загрузка…</div><a href="/notifications"><b>Все уведомления</b></a></div></div>
+    <a class="iconbtn" href="/messages" aria-label="Личные сообщения">✉️<% if (unreadPm) { %><span class="dot"><%= unreadPm %></span><% } %></a>
+    <div class="dd"><button class="iconbtn" data-dd="user" aria-label="Профиль"><%- avatar(me.username, me.avatar, me.roles[0], 30) %></button>
+      <div class="dd-panel"><a href="/u/<%= encodeURIComponent(me.username) %>"><%- nick(me.username, me.roles[0]) %></a><a href="/settings">Настройки</a>
+        <form method="post" action="/logout"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="lnk">Выйти</button></form></div></div>
+  <% } else { %><a class="btn sec sm" href="/login">Вход</a><a class="btn sm" href="/register">Регистрация</a><% } %>
+  </div>
+</div></header>
+<main class="wrap">
+<% flash.forEach(function (f) { %><div class="flash <%= f.t %>" role="status"><%= f.m %></div><% }) %>

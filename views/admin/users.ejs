@@ -1,0 +1,8 @@
+<%- include('../partials/admin_head') %>
+<h1>Пользователи</h1>
+<form class="inl" style="margin:10px 0"><input name="q" value="<%= q %>" placeholder="Ник или email" style="max-width:240px"><select name="role" style="width:auto"><option value="">Все роли</option><% roles.forEach(function (r) { %><option value="<%= r.key %>" <%= role === r.key ? 'selected' : '' %>><%= r.name %></option><% }) %></select>
+<select name="sort" style="width:auto"><option value="new" <%= sort === 'new' ? 'selected' : '' %>>Новые</option><option value="posts" <%= sort === 'posts' ? 'selected' : '' %>>По сообщениям</option><option value="seen" <%= sort === 'seen' ? 'selected' : '' %>>По активности</option></select><button class="btn">Найти</button></form>
+<section class="card tbl"><table><thead><tr><th>Ник</th><th>Роли</th><th>Email</th><th>Сообщ.</th><th>Был(а)</th></tr></thead><tbody>
+<% users.forEach(function (u) { %><tr><td><a href="/admin/users/<%= u.id %>"><%= u.username %></a></td><td><% (rm[u.id] || []).forEach(function (r) { %><%- badge(r) %> <% }) %></td><td><%= can('user.manage') ? u.email : '—' %></td><td><%= u.post_count %></td><td><%= ago(u.last_seen) %></td></tr><% }) %></tbody></table></section>
+<%- include('../partials/pager', { pg, base: '/admin/users?q=' + encodeURIComponent(q) + '&role=' + role + '&sort=' + sort }) %>
+<%- include('../partials/admin_foot') %>

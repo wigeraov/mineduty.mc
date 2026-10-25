@@ -1,0 +1,8 @@
+<% if (pg.pages > 1) { var sep = base.indexOf('?') >= 0 ? '&' : '?', from = Math.max(1, pg.page - 2), to = Math.min(pg.pages, pg.page + 2); %>
+<nav class="pager" aria-label="Страницы">
+  <% if (pg.page > 1) { %><a href="<%= base + sep %>page=<%= pg.page - 1 %>">←</a><% } %>
+  <% if (from > 1) { %><a href="<%= base + sep %>page=1">1</a><% if (from > 2) { %><span>…</span><% } %><% } %>
+  <% for (var i = from; i <= to; i++) { %><% if (i === pg.page) { %><span class="on"><%= i %></span><% } else { %><a href="<%= base + sep %>page=<%= i %>"><%= i %></a><% } %><% } %>
+  <% if (to < pg.pages) { %><% if (to < pg.pages - 1) { %><span>…</span><% } %><a href="<%= base + sep %>page=<%= pg.pages %>"><%= pg.pages %></a><% } %>
+  <% if (pg.page < pg.pages) { %><a href="<%= base + sep %>page=<%= pg.page + 1 %>">→</a><% } %>
+</nav><% } %>

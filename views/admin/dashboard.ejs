@@ -1,0 +1,6 @@
+<%- include('../partials/admin_head') %>
+<h1>Панель управления</h1>
+<div class="stats" style="grid-template-columns:repeat(auto-fit,minmax(130px,1fr));padding:12px 0">
+<% [['Пользователей', stats.users], ['Новых за 7 дней', stats.new7], ['Тем', stats.threads], ['Сообщений', stats.posts], ['Открытых жалоб', stats.reports], ['Блокировок', stats.bans], ['Мутов', stats.mutes]].forEach(function (x) { %><div class="stat card" style="margin:0"><b><%= x[1] %></b><span class="muted small"><%= x[0] %></span></div><% }) %></div>
+<% if (can('audit.view')) { %><section class="card"><h2>Последние действия</h2><div class="tbl"><table><tbody><% log.forEach(function (l) { %><tr><td class="muted"><%= ago(l.created_at) %></td><td><%= l.actor_name %></td><td><code><%= l.action %></code></td><td><%= l.target %></td></tr><% }) %><% if (!log.length) { %><tr><td class="muted">Пока пусто</td></tr><% } %></tbody></table></div></section><% } %>
+<%- include('../partials/admin_foot') %>

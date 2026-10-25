@@ -1,0 +1,9 @@
+<%- include('../partials/head') %>
+<div class="card pad form"><h1>Новый пароль</h1>
+<% if (!valid) { %><p>Ссылка недействительна или устарела. <a href="/forgot">Запросить новую</a></p><% } else { %>
+<% if (error) { %><div class="errors"><%= error %></div><% } %>
+<form method="post" class="stack"><input type="hidden" name="_csrf" value="<%= csrf %>">
+<label for="p1">Новый пароль</label><input id="p1" type="password" name="password" required minlength="8" autocomplete="new-password">
+<label for="p2">Повторите пароль</label><input id="p2" type="password" name="password2" required minlength="8" autocomplete="new-password">
+<button class="btn">Сохранить пароль</button></form><% } %></div>
+<%- include('../partials/foot') %>

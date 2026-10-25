@@ -1,0 +1,8 @@
+<%- include('partials/head') %>
+<%- include('partials/crumbs', { crumbs: [['Форум', '/'], ['Пользователи']] }) %>
+<h1>Пользователи</h1>
+<form class="inl" style="margin:10px 0"><input name="q" value="<%= q %>" placeholder="Найти по нику" style="max-width:300px"><button class="btn">Найти</button></form>
+<section class="card"><div class="rows"><% if (!users.length) { %><div class="empty">Никого не нашли.</div><% } %>
+<% users.forEach(function (u) { var roles = rm[u.id] || []; %><a class="row" href="/u/<%= encodeURIComponent(u.username) %>"><%- avatar(u.username, u.avatar, roles[0], 40) %><div class="main"><div class="t" style="color:<%= roles[0] ? roles[0].color : '#b9b9c3' %>"><%= u.username %> <%- badge(roles[0]) %></div><div class="muted small"><%= isOnline(u) ? '🟢 в сети' : 'был(а) ' + ago(u.last_seen) %></div></div><div class="col">Сообщений: <b><%= u.post_count %></b></div></a><% }) %></div></section>
+<%- include('partials/pager', { pg, base: '/members?q=' + encodeURIComponent(q) }) %>
+<%- include('partials/foot') %>

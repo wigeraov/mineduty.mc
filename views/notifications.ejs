@@ -1,0 +1,7 @@
+<%- include('partials/head') %>
+<%- include('partials/crumbs', { crumbs: [['Форум', '/'], ['Уведомления']] }) %>
+<div class="card-h" style="padding:0 0 12px;border:0"><h1>Уведомления</h1><form method="post" action="/notifications/read"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="btn sec sm">Прочитать все</button></form></div>
+<section class="card"><% if (!items.length) { %><div class="empty">Здесь появятся ответы, упоминания, реакции и решения по жалобам.</div><% } %>
+<% items.forEach(function (n) { %><a class="notif <%= n.read ? '' : 'new' %>" href="/notifications/go/<%= n.id %>"><span><%= {reply:'💬',mention:'@',reaction:'👍',pm:'✉️',warning:'⚠️',report:'📋',award:'🏅'}[n.type] || '🔔' %></span><span style="flex:1"><%= n.text %></span><span class="muted small"><%= ago(n.created_at) %></span></a><% }) %></section>
+<%- include('partials/pager', { pg, base: '/notifications' }) %>
+<%- include('partials/foot') %>

@@ -1,0 +1,6 @@
+</main>
+<footer><div class="wrap"><span>© <%= new Date().getFullYear() %> <%= site.site_name %> · <%= site.tagline %></span>
+<span><% if (site.discord) { %><a href="<%= site.discord %>" rel="noopener">Discord</a> · <% } %><% if (site.vk) { %><a href="<%= site.vk %>" rel="noopener">ВКонтакте</a> · <% } %><% if (site.youtube) { %><a href="<%= site.youtube %>" rel="noopener">YouTube</a> · <% } %><a href="<%= sectionLink('Правила проекта') %>">Правила</a></span></div></footer>
+<dialog id="confirm-dlg"><form method="dialog"><p id="confirm-text"></p><div class="inl"><button class="btn danger" value="yes">Подтвердить</button><button class="btn sec" value="no">Отмена</button></div></form></dialog>
+<script src="/static/js/app.js"></script>
+</body></html>

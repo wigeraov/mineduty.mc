@@ -1,0 +1,10 @@
+<%- include('../partials/admin_head') %>
+<h1>Жалобы</h1>
+<div class="tabs"><% [['open', 'Открытые'], ['resolved', 'Рассмотренные'], ['rejected', 'Отклонённые']].forEach(function (x) { %><a class="<%= status === x[0] ? 'on' : '' %>" href="/admin/reports?status=<%= x[0] %>"><%= x[1] %></a><% }) %></div>
+<% if (!items.length) { %><div class="card empty">Здесь пусто.</div><% } %>
+<% items.forEach(function (i) { %><section class="card pad"><div class="small muted">Жалоба #<%= i.id %> от <b><%= i.reporter %></b> · <%= ago(i.created_at) %> · на сообщение <a href="/t/<%= i.thread_id %>?p=<%= i.post_id %>#post-<%= i.post_id %>">#<%= i.post_id %></a> игрока <b><%= i.author %></b> в теме «<%= i.title %>»</div>
+<p><b>Причина:</b> <%= i.reason %></p><blockquote class="muted" style="margin:0 0 10px"><%= i.body.slice(0, 300) %></blockquote>
+<% if (i.status === 'open') { %><form method="post" action="/admin/reports/<%= i.id %>" class="inl"><input type="hidden" name="_csrf" value="<%= csrf %>"><input name="note" placeholder="Комментарий автору жалобы" maxlength="300" style="flex:1;min-width:200px"><button name="status" value="resolved" class="btn sm">Рассмотрена</button><button name="status" value="rejected" class="btn sm sec">Отклонить</button><a class="btn sm sec" href="/admin/users/<%= i.author_id %>">Автору</a></form>
+<% } else { %><div class="muted small">Обработал <%= i.handler %> · <%= ago(i.handled_at) %><%= i.note ? ' · ' + i.note : '' %></div><% } %></section><% }) %>
+<%- include('../partials/pager', { pg, base: '/admin/reports?status=' + status }) %>
+<%- include('../partials/admin_foot') %>

@@ -1,0 +1,27 @@
+<%- include('partials/head', { desc: 'Профиль игрока ' + u.username }) %>
+<% var main = roles[0] || {}; %>
+<section class="card" style="--rc:<%= main.color || '#888' %>;border-color:<%= main.color || '#888' %>55">
+  <div class="cover" style="<%= u.cover ? 'background-image:url(' + u.cover + ')' : '' %>"></div>
+  <div class="phead"><%- avatar(u.username, u.avatar, main, 96) %>
+    <div style="flex:1"><h1><%- nick(u.username, main) %> <span class="status <%= online ? 'on' : '' %>"><i></i><%= online ? 'в сети' : 'не в сети' %></span></h1>
+    <div><% roles.forEach(function (r) { %><%- badge(r) %> <% }) %></div>
+    <div class="muted small">Регистрация: <%= fmtDate(u.created_at) %> · Последняя активность: <%= u.show_online || (me && me.id === u.id) ? ago(u.last_seen) : 'скрыта' %></div></div>
+    <div class="inl"><% if (me && me.id !== u.id) { %><a class="btn" href="/messages/<%= encodeURIComponent(u.username) %>">✉️ Написать</a><% } %><% if (me && me.id === u.id) { %><a class="btn sec" href="/settings">Настройки</a><% } %>
+    <% if (can('user.manage') || can('warn.issue')) { %><a class="btn sec" href="/admin/users/<%= u.id %>">Модерация</a><% } %></div></div>
+  <div class="stats"><div class="stat"><b><%= u.post_count %></b><span class="muted small">сообщений</span></div><div class="stat"><b><%= u.thread_count %></b><span class="muted small">тем</span></div><div class="stat"><b><%= stats.likes %></b><span class="muted small">реакций</span></div></div>
+</section>
+<div class="tabs"><% [['overview', 'Обзор'], ['posts', 'Сообщения'], ['threads', 'Темы'], ['awards', 'Награды']].forEach(function (x) { %><a class="<%= tab === x[0] ? 'on' : '' %>" href="/u/<%= encodeURIComponent(u.username) %>?tab=<%= x[0] %>"><%= x[1] %></a><% }) %><% if (me && me.id === u.id) { %><a href="/settings">Настройки</a><% } %></div>
+<% if (tab === 'overview') { %>
+<section class="card pad"><h3>О себе</h3><p><%= u.about || 'Пользователь пока ничего не рассказал о себе.' %></p></section>
+<% if (canSeeSanctions && (sanctions.length || warnings.length)) { %><section class="card pad"><h3>Предупреждения и ограничения</h3>
+<% sanctions.forEach(function (b) { %><div class="flash err"><b><%= b.type === 'ban' ? 'Блокировка' : 'Мут' %></b> до <%= b.expires_at ? fmtDate(b.expires_at) : 'бессрочно' %>: <%= b.reason %> <span class="muted">(<%= b.issuer %>)</span></div><% }) %>
+<% warnings.forEach(function (w) { %><div class="li">⚠️ <%= w.reason %> <span class="muted small">· <%= w.issuer %> · <%= ago(w.created_at) %></span></div><% }) %></section><% } %>
+<% } %>
+<% if (tab === 'overview' || tab === 'posts') { %><section class="card"><h2>Последние сообщения</h2><div class="rows"><% if (!posts.length) { %><div class="empty">Сообщений пока нет.</div><% } %>
+<% posts.forEach(function (p) { %><a class="row" href="/t/<%= p.tid %>?p=<%= p.id %>#post-<%= p.id %>"><div class="main"><div class="t"><%= p.title %></div><div class="muted small"><%= p.body.slice(0, 140) %></div></div><div class="col"><%= ago(p.created_at) %></div></a><% }) %></div></section><% } %>
+<% if (tab === 'overview' || tab === 'threads') { %><section class="card"><h2>Созданные темы</h2><div class="rows"><% if (!threads.length) { %><div class="empty">Тем пока нет.</div><% } %>
+<% threads.forEach(function (t) { %><a class="row" href="/t/<%= t.id %>"><div class="main"><div class="t"><%= t.title %></div><div class="muted small"><%= t.st %> · <%= ago(t.created_at) %></div></div><div class="col">Ответов: <b><%= t.replies %></b></div></a><% }) %></div></section><% } %>
+<% if (tab === 'awards' || (tab === 'overview' && awards.length)) { var got = awards.map(function (a) { return a.key; }); %><section class="card pad"><h3>Награды</h3><div class="stack">
+<% (tab === 'awards' ? allAwards : awards).forEach(function (a) { %><div class="award <%= tab === 'awards' && got.indexOf(a.key) < 0 ? 'off' : '' %>"><span style="font-size:28px"><%= a.icon %></span><div><b><%= a.title %></b><span class="muted small"><%= a.description %></span></div></div><% }) %>
+<% if (!awards.length && tab !== 'awards') { %><span class="muted">Наград пока нет.</span><% } %></div></section><% } %>
+<%- include('partials/foot') %>

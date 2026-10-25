@@ -1,0 +1,6 @@
+<%- include('partials/head') %>
+<%- include('partials/crumbs', { crumbs: [['Форум', '/'], ['Личные сообщения']] }) %>
+<h1>Личные сообщения</h1>
+<section class="card" style="margin-top:12px"><div class="rows"><% if (!convs.length) { %><div class="empty">Переписок пока нет. Откройте профиль игрока и нажмите «Написать».</div><% } %>
+<% convs.forEach(function (c) { %><a class="row" href="/messages/<%= encodeURIComponent(c.username) %>"><%- avatar(c.username, c.avatar, (rm[c.uid] || [])[0], 40) %><div class="main"><div class="t"><%= c.username %> <% if (c.unread) { %><span class="tag ok"><%= c.unread %> нов.</span><% } %></div><div class="muted small"><%= (c.last || '').slice(0, 90) %></div></div><div class="col"><%= ago(c.updated_at) %></div></a><% }) %></div></section>
+<%- include('partials/foot') %>

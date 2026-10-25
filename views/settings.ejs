@@ -1,0 +1,16 @@
+<%- include('partials/head') %>
+<%- include('partials/crumbs', { crumbs: [['Форум', '/'], [me.username, '/u/' + encodeURIComponent(me.username)], ['Настройки']] }) %>
+<h1>Настройки аккаунта</h1>
+<% if (errors.length) { %><ul class="errors"><% errors.forEach(function (e) { %><li><%= e %></li><% }) %></ul><% } %>
+<div class="grid" style="margin-top:12px"><div>
+<section class="card pad"><h3>Профиль и приватность</h3><form method="post" action="/settings/profile" class="stack"><input type="hidden" name="_csrf" value="<%= csrf %>">
+<label for="a">О себе</label><textarea id="a" name="about" maxlength="500" rows="4"><%= me.about %></textarea>
+<label for="pm">Кто может писать вам в личные сообщения</label><select id="pm" name="pm_privacy"><option value="everyone" <%= me.pm_privacy === 'everyone' ? 'selected' : '' %>>Все</option><option value="nobody" <%= me.pm_privacy === 'nobody' ? 'selected' : '' %>>Только персонал</option></select>
+<label class="inline"><input type="checkbox" name="show_online" <%= me.show_online ? 'checked' : '' %>> Показывать мой статус «в сети»</label><div><button class="btn">Сохранить</button></div></form></section>
+<section class="card pad"><h3>Аватар и обложка</h3><form method="post" action="/settings/images?_=1" enctype="multipart/form-data" class="stack">
+<label>Аватар (PNG, JPEG, GIF, WebP до 3 МБ)</label><input type="file" name="avatar" accept="image/png,image/jpeg,image/gif,image/webp">
+<label>Обложка профиля</label><input type="file" name="cover" accept="image/png,image/jpeg,image/gif,image/webp"><input type="hidden" name="_csrf" value="<%= csrf %>"><div><button class="btn">Загрузить</button></div></form></section>
+</div><aside class="aside"><section class="card pad"><h3>Смена пароля</h3><form method="post" action="/settings/password" class="stack"><input type="hidden" name="_csrf" value="<%= csrf %>">
+<label for="c">Текущий пароль</label><input id="c" type="password" name="current" required autocomplete="current-password"><label for="n1">Новый пароль</label><input id="n1" type="password" name="password" minlength="8" required autocomplete="new-password"><label for="n2">Повторите</label><input id="n2" type="password" name="password2" minlength="8" required autocomplete="new-password"><div><button class="btn">Изменить</button></div></form></section>
+<section class="card pad small muted">Email: <%= me.email %><br>Регистрация: <%= fmtDate(me.created_at) %></section></aside></div>
+<%- include('partials/foot') %>

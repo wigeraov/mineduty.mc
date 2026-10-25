@@ -1,0 +1,6 @@
+<%- include('../partials/admin_head') %>
+<h1>Журнал действий</h1><p class="muted small"><%= full ? 'Полный журнал.' : 'Показаны действия базового уровня.' %></p>
+<form class="inl" style="margin:8px 0"><input name="q" value="<%= q %>" placeholder="Действие, ник, цель" style="max-width:280px"><button class="btn">Найти</button></form>
+<section class="card tbl"><table><thead><tr><th>Когда</th><th>Кто</th><th>Действие</th><th>Цель</th><th>Детали</th></tr></thead><tbody><% items.forEach(function (l) { %><tr><td class="muted"><%= fmtDate(l.created_at) %></td><td><%= l.actor_name %></td><td><code><%= l.action %></code></td><td><%= l.target %></td><td class="muted"><%= l.details %></td></tr><% }) %></tbody></table></section>
+<%- include('../partials/pager', { pg, base: '/admin/logs?q=' + encodeURIComponent(q) }) %>
+<%- include('../partials/admin_foot') %>

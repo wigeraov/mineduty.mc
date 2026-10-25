@@ -1,0 +1,7 @@
+<%- include('../partials/admin_head') %>
+<h1>Блокировки и предупреждения</h1>
+<section class="card"><h2>Блокировки и муты</h2><div class="tbl"><table><thead><tr><th>Игрок</th><th>Тип</th><th>Причина</th><th>Срок</th><th></th></tr></thead><tbody>
+<% bans.forEach(function (b) { var live = b.active && (!b.expires_at || b.expires_at > now); %><tr><td><%= b.username %></td><td><%= b.type === 'ban' ? 'Бан' : 'Мут' %></td><td><%= b.reason %><div class="muted small"><%= b.issuer %> · <%= ago(b.created_at) %></div></td><td><%= b.expires_at ? fmtDate(b.expires_at) : 'бессрочно' %></td>
+<td><% if (live && can(b.type === 'ban' ? 'user.ban' : 'user.mute')) { %><form method="post" action="/admin/sanctions/<%= b.id %>/revoke" data-confirm="Снять санкцию с <%= b.username %>?"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="btn sm sec">Снять</button></form><% } else { %><span class="muted"><%= live ? '' : 'завершена' %></span><% } %></td></tr><% }) %></tbody></table></div></section>
+<section class="card"><h2>Предупреждения</h2><div class="tbl"><table><tbody><% warnings.forEach(function (w) { %><tr><td><%= w.username %></td><td><%= w.reason %></td><td class="muted"><%= w.issuer %> · <%= ago(w.created_at) %></td></tr><% }) %></tbody></table></div></section>
+<%- include('../partials/admin_foot') %>

@@ -1,0 +1,6 @@
+<%- include('../partials/admin_head') %>
+<h1>Темы и сообщения</h1>
+<section class="card"><h2>Удалённые сообщения</h2><div class="tbl"><table><tbody><% if (!deleted.length) { %><tr><td class="muted">Нет удалённых сообщений.</td></tr><% } %>
+<% deleted.forEach(function (p) { %><tr><td><b><%= p.username %></b><div class="muted small">«<%= p.title %>» · удалил(а) <%= p.deleter || '—' %> · <%= ago(p.edited_at) %></div><div><%= p.body.slice(0, 200) %></div></td><td><form method="post" action="/admin/posts/<%= p.id %>/restore"><input type="hidden" name="_csrf" value="<%= csrf %>"><button class="btn sm sec">Восстановить</button></form></td></tr><% }) %></tbody></table></div></section>
+<section class="card"><h2>Последние темы</h2><div class="tbl"><table><tbody><% threads.forEach(function (t) { %><tr><td><a href="/t/<%= t.id %>"><%= t.title %></a><div class="muted small"><%= t.st %> · <%= t.username %> · <%= t.status %><%= t.pinned ? ' · закреплена' : '' %></div></td><td class="muted"><%= t.replies %> отв.</td></tr><% }) %></tbody></table></div></section>
+<%- include('../partials/admin_foot') %>

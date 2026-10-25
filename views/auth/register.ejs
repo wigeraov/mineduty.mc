@@ -1,0 +1,11 @@
+<%- include('../partials/head') %>
+<div class="card pad form"><h1>Регистрация</h1>
+<% if (errors.length) { %><ul class="errors"><% errors.forEach(function (e) { %><li><%= e %></li><% }) %></ul><% } %>
+<form method="post" action="/register" class="stack"><input type="hidden" name="_csrf" value="<%= csrf %>">
+<label for="u">Логин</label><input id="u" name="username" value="<%= v.username || '' %>" required minlength="3" maxlength="20" pattern="[A-Za-z0-9_]+" autocomplete="username"><span class="muted small">Латиница, цифры и _ (3–20 символов)</span>
+<label for="e">Email</label><input id="e" type="email" name="email" value="<%= v.email || '' %>" required autocomplete="email">
+<label for="p1">Пароль</label><input id="p1" type="password" name="password" required minlength="8" autocomplete="new-password">
+<label for="p2">Повторите пароль</label><input id="p2" type="password" name="password2" required minlength="8" autocomplete="new-password">
+<button class="btn">Создать аккаунт</button></form>
+<p class="muted">Уже есть аккаунт? <a href="/login">Войти</a></p></div>
+<%- include('../partials/foot') %>

@@ -1,0 +1,7 @@
+<%- include('../partials/head') %>
+<div class="card pad form"><h1>Восстановление пароля</h1>
+<% if (done) { %><p>Если такой email зарегистрирован, мы отправили ссылку для сброса пароля. Она действует 1 час.</p>
+<% if (!smtpOn) { %><p class="muted small">Почтовый сервер не настроен: ссылка выведена в консоль сервера (см. README).</p><% } %>
+<% } else { %><form method="post" action="/forgot" class="stack"><input type="hidden" name="_csrf" value="<%= csrf %>">
+<label for="e">Email аккаунта</label><input id="e" type="email" name="email" required><button class="btn">Отправить ссылку</button></form><% } %></div>
+<%- include('../partials/foot') %>

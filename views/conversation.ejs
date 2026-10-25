@@ -1,0 +1,7 @@
+<%- include('partials/head') %>
+<%- include('partials/crumbs', { crumbs: [['Форум', '/'], ['Личные сообщения', '/messages'], [other.username]] }) %>
+<section class="card"><h2>Диалог с <%- nick(other.username, (rm[other.id] || [])[0]) %></h2>
+<div class="chat"><% if (!msgs.length) { %><div class="empty">Напишите первое сообщение.</div><% } %>
+<% msgs.forEach(function (m) { %><div class="msg <%= m.sender_id === me.id ? 'mine' : '' %>"><div><%= m.body %></div><div class="muted small"><%= m.username %> · <%= ago(m.created_at) %></div></div><% }) %></div>
+<form method="post" class="pad stack"><input type="hidden" name="_csrf" value="<%= csrf %>"><textarea name="body" rows="3" maxlength="5000" required placeholder="Ваше сообщение…"></textarea><div><button class="btn">Отправить</button></div></form></section>
+<%- include('partials/foot') %>

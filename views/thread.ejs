@@ -1,0 +1,44 @@
+<%- include('partials/head', { desc: t.title }) %>
+<%- include('partials/crumbs', { crumbs: [['Форум', '/'], [t.stitle, '/s/' + t.sid], [t.title]] }) %>
+<h1><% if (t.pinned) { %><span class="tag pin">📌</span><% } %><% if (t.status === 'closed') { %><span class="tag lock">🔒 Закрыта</span><% } %><% if (t.status === 'archived') { %><span class="tag">🗄️ Архив</span><% } %><% if (t.solved) { %><span class="tag ok">✅ Решена</span><% } %><%= t.title %></h1>
+<div class="muted small" style="margin-bottom:12px">👁 <%= t.views %> · 💬 <%= t.replies %> · создана <%= fmtDate(t.created_at) %></div>
+<section class="card">
+<% posts.forEach(function (p) { var roles = rm[p.user_id] || [], main = roles[0]; var hide = p.deleted && !can('post.delete_any'); %>
+<article class="post<%= main && main.is_staff ? ' staff' : '' %>" id="post-<%= p.id %>" style="--rc:<%= main ? main.color : '#888' %>">
+  <div class="pside"><%- avatar(p.username, p.avatar, main, 64) %><div><%- nick(p.username, main) %><div><% roles.forEach(function (r) { %><%- badge(r) %><% }) %></div>
+  <div class="muted small pc">Сообщений: <%= p.upc %><br>На форуме с <%= new Date(p.ucreated).toLocaleDateString('ru-RU') %></div></div></div>
+  <div class="pmain"><div class="pmeta"><span><a href="#post-<%= p.id %>" class="muted"><%= fmtDate(p.created_at) %></a><% if (p.first) { %> · автор темы<% } %></span><span>#<%= p.id %></span></div>
+  <% if (hide) { %><div class="pbody gone">[Сообщение удалено]</div><% } else { %>
+  <div class="pbody<%= p.deleted ? ' gone' : '' %>"><%- bbcode(p.body) %></div>
+  <% if (p.edited_at && !p.deleted) { %><div class="muted small" style="margin-top:8px">Изменено <%= ago(p.edited_at) %></div><% } %>
+  <div class="pfoot">
+    <div class="rx"><% Object.keys(KINDS).forEach(function (k) { var n = p.rx[k] || 0; if (me && me.id !== p.user_id && !p.deleted) { %>
+      <form method="post" action="/post/<%= p.id %>/react"><input type="hidden" name="_csrf" value="<%= csrf %>"><input type="hidden" name="kind" value="<%= k %>"><button class="<%= p.mine === k ? 'me' : '' %>" aria-label="Реакция"><%= KINDS[k] %> <%= n || '' %></button></form>
+      <% } else if (n) { %><button disabled><%= KINDS[k] %> <%= n %></button><% } }) %></div>
+    <div class="pact">
+      <% if (canReply && !p.deleted) { %><a href="/t/<%= t.id %>?quote=<%= p.id %>&page=<%= pg.page %>#reply">Цитировать</a><% } %>
+      <% if (p.canEdit) { %><a href="/post/<%= p.id %>/edit">Изменить</a><% } %>
+      <% if (p.canDel) { %><form method="post" action="/post/<%= p.id %>/delete" data-confirm="Удалить это сообщение?"><input type="hidden" name="_csrf" value="<%= csrf %>"><button>Удалить</button></form><% } %>
+    </div></div>
+  <% if (me && me.id !== p.user_id && can('report.create') && !p.deleted) { %><details class="rep"><summary>Пожаловаться</summary>
+    <form method="post" action="/post/<%= p.id %>/report" class="inl" style="margin-top:6px"><input type="hidden" name="_csrf" value="<%= csrf %>"><input name="reason" placeholder="Что не так с этим сообщением?" minlength="5" maxlength="500" required style="flex:1"><button class="btn sm">Отправить</button></form></details><% } %>
+  <% } %></div></article>
+<% }) %>
+<% if (sections.length || can('thread.close') || can('thread.pin') || can('thread.archive') || can('thread.delete') || canSolve) { %>
+<div class="modbar">
+  <% var act = function (a, label, perm, cls) { if (perm) { %><form method="post" action="/t/<%= t.id %>/mod"><input type="hidden" name="_csrf" value="<%= csrf %>"><input type="hidden" name="action" value="<%= a %>"><button class="btn sm <%= cls || 'sec' %>"><%= label %></button></form><% } }; %>
+  <% act(t.status === 'closed' ? 'open' : 'close', t.status === 'closed' ? '🔓 Открыть' : '🔒 Закрыть', can('thread.close')); %>
+  <% act(t.pinned ? 'unpin' : 'pin', t.pinned ? 'Открепить' : '📌 Закрепить', can('thread.pin')); %>
+  <% act(t.status === 'archived' ? 'unarchive' : 'archive', t.status === 'archived' ? 'Из архива' : '🗄️ В архив', can('thread.archive')); %>
+  <% act(t.solved ? 'unsolve' : 'solve', t.solved ? 'Снять «решено»' : '✅ Решено', canSolve); %>
+  <% if (sections.length) { %><form method="post" action="/t/<%= t.id %>/mod" class="inl"><input type="hidden" name="_csrf" value="<%= csrf %>"><input type="hidden" name="action" value="move"><select name="section_id" style="width:auto"><% sections.forEach(function (s) { %><option value="<%= s.id %>" <%= s.id === t.sid ? 'selected' : '' %>><%= s.title %></option><% }) %></select><button class="btn sm sec">Переместить</button></form><% } %>
+  <% if (can('thread.delete')) { %><form method="post" action="/t/<%= t.id %>/mod" data-confirm="Удалить тему вместе со всеми сообщениями? Это действие необратимо."><input type="hidden" name="_csrf" value="<%= csrf %>"><input type="hidden" name="action" value="delete"><button class="btn sm danger">Удалить тему</button></form><% } %>
+</div><% } %>
+</section>
+<%- include('partials/pager', { pg, base: '/t/' + t.id }) %>
+<section class="card pad" id="reply"><h3>Ответить</h3>
+<% if (!me) { %><p class="muted"><a href="/login?next=/t/<%= t.id %>">Войдите</a> или <a href="/register">зарегистрируйтесь</a>, чтобы отвечать.</p>
+<% } else if (!canReply) { %><p class="muted"><%= replyBlock %></p>
+<% } else { %><form method="post" action="/t/<%= t.id %>/reply"><input type="hidden" name="_csrf" value="<%= csrf %>">
+<%- include('partials/editor', { draft: 'reply-' + t.id, value: quote, rows: 6 }) %><p><button class="btn">Отправить ответ</button></p></form><% } %></section>
+<%- include('partials/foot') %>

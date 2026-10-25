@@ -1,0 +1,9 @@
+<%- include('partials/head') %>
+<%- include('partials/crumbs', { crumbs: [['Форум', '/'], [s.title, '/s/' + s.id], [title]] }) %>
+<section class="card pad"><h1><%= mode === 'thread' ? 'Новая тема' : 'Редактирование' %></h1>
+<% if (errors.length) { %><ul class="errors"><% errors.forEach(function (e) { %><li><%= e %></li><% }) %></ul><% } %>
+<form method="post" action="<%= mode === 'thread' ? '/s/' + s.id + '/new' : '/post/' + post.id + '/edit' %>"><input type="hidden" name="_csrf" value="<%= csrf %>">
+<% if (mode === 'thread' || mode === 'edit-first') { %><label for="t">Заголовок</label><input id="t" name="title" value="<%= v.title || '' %>" minlength="3" maxlength="120" required placeholder="Например: Жалоба на ник_игрока"><% } %>
+<label>Текст</label><%- include('partials/editor', { draft: mode === 'thread' ? 'thread-' + s.id : 'edit-' + post.id, value: v.body || '', rows: 12 }) %>
+<p class="inl"><button class="btn"><%= mode === 'thread' ? 'Опубликовать' : 'Сохранить' %></button><a class="btn sec" href="<%= mode === 'thread' ? '/s/' + s.id : '/t/' + t.id %>">Отмена</a></p></form></section>
+<%- include('partials/foot') %>

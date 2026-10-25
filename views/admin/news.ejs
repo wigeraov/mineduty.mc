@@ -1,0 +1,6 @@
+<%- include('../partials/admin_head') %>
+<h1>Новости форума</h1>
+<section class="card pad"><form method="post" action="/admin/news" class="stack"><input type="hidden" name="_csrf" value="<%= csrf %>"><input name="title" placeholder="Заголовок" required maxlength="120"><textarea name="body" placeholder="Текст новости (до 2000 символов)" maxlength="2000" required rows="4"></textarea><div><button class="btn">Опубликовать на главной</button></div></form></section>
+<% items.forEach(function (n) { %><section class="card pad"><b><%= n.title %></b> <span class="muted small">· <%= n.username %> · <%= ago(n.created_at) %></span><p><%= n.body %></p>
+<form method="post" action="/admin/news" data-confirm="Удалить новость?"><input type="hidden" name="_csrf" value="<%= csrf %>"><input type="hidden" name="op" value="delete"><input type="hidden" name="id" value="<%= n.id %>"><button class="btn sm danger">Удалить</button></form></section><% }) %>
+<%- include('../partials/admin_foot') %>

@@ -1,0 +1,5 @@
+<%- include('head') %>
+<div class="admin"><nav class="card aside-nav" aria-label="Разделы панели">
+<% [['/admin', 'Главная', 'admin.access'], ['/admin/users', 'Пользователи', 'user.manage|warn.issue|user.mute'], ['/admin/roles', 'Роли и цвета', 'role.manage'], ['/admin/categories', 'Категории', 'category.manage'], ['/admin/content', 'Темы и сообщения', 'post.delete_any'], ['/admin/reports', 'Жалобы', 'report.handle'], ['/admin/sanctions', 'Санкции', 'warn.issue'], ['/admin/news', 'Новости', 'news.manage'], ['/admin/settings', 'Настройки', 'settings.manage'], ['/admin/logs', 'Журнал', 'audit.view']].forEach(function (x) {
+  if (x[2].split('|').some(function (p) { return can(p); })) { %><a class="<%= adminPath === x[0].slice(6) || (x[0] === '/admin' && adminPath === '/') || (x[0] !== '/admin' && adminPath.indexOf(x[0].slice(6)) === 0) ? 'on' : '' %>" href="<%= x[0] %>"><%= x[1] %></a><% } }) %>
+</nav><div>

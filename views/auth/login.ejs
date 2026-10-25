@@ -1,0 +1,9 @@
+<%- include('../partials/head') %>
+<div class="card pad form"><h1>Вход</h1>
+<% if (error) { %><div class="errors" style="list-style:none;padding:10px 14px"><%= error %></div><% } %>
+<form method="post" action="/login" class="stack"><input type="hidden" name="_csrf" value="<%= csrf %>"><input type="hidden" name="next" value="<%= next %>">
+<label for="l">Логин или email</label><input id="l" name="login" value="<%= v %>" required autocomplete="username">
+<label for="p">Пароль</label><input id="p" type="password" name="password" required autocomplete="current-password">
+<div class="inl"><button class="btn">Войти</button><a href="/forgot">Забыли пароль?</a></div></form>
+<p class="muted">Нет аккаунта? <a href="/register">Зарегистрируйтесь</a></p></div>
+<%- include('../partials/foot') %>

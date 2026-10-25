@@ -1,0 +1,12 @@
+<%- include('partials/head', { desc: s.description }) %>
+<%- include('partials/crumbs', { crumbs: [['Форум', '/'], [s.cat], [s.title]] }) %>
+<div class="card-h" style="padding:0 0 12px;border:0"><div><h1><%= s.icon %> <%= s.title %></h1><div class="muted"><%= s.description %></div></div>
+<% if (canCreate) { %><a class="btn" href="/s/<%= s.id %>/new">Создать тему</a><% } else if (!me) { %><a class="btn sec" href="/login?next=/s/<%= s.id %>">Войдите, чтобы создать тему</a><% } %></div>
+<div class="tabs"><% [['last', 'По активности'], ['new', 'Новые'], ['replies', 'По ответам'], ['views', 'По просмотрам']].forEach(function (x) { %><a class="<%= sort === x[0] ? 'on' : '' %>" href="/s/<%= s.id %>?sort=<%= x[0] %>"><%= x[1] %></a><% }) %></div>
+<section class="card"><div class="rows">
+<% if (!threads.length) { %><div class="empty">В этом разделе пока нет тем.<% if (canCreate) { %><br><a href="/s/<%= s.id %>/new">Напишите первую</a><% } %></div><% } %>
+<% threads.forEach(function (t) { %><a class="row" href="/t/<%= t.id %>"><div class="main"><div class="t"><% if (t.pinned) { %><span class="tag pin">📌 Закреплена</span><% } %><% if (t.status === 'closed') { %><span class="tag lock">🔒 Закрыта</span><% } %><% if (t.status === 'archived') { %><span class="tag">🗄️ Архив</span><% } %><% if (t.solved) { %><span class="tag ok">✅ Решена</span><% } %><%= t.title %></div>
+<div class="muted small"><%- nick(t.username, (rm[t.user_id] || [])[0]) %> · <%= ago(t.created_at) %></div></div>
+<div class="col">Ответов: <b><%= t.replies %></b>Просмотров: <b><%= t.views %></b></div><div class="col w">Последний ответ<b><%= t.lname || t.username %></b><%= ago(t.last_post_at) %></div></a><% }) %></div></section>
+<%- include('partials/pager', { pg, base: '/s/' + s.id + '?sort=' + sort }) %>
+<%- include('partials/foot') %>

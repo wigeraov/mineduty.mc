@@ -1,0 +1,10 @@
+<%- include('../partials/admin_head') %>
+<h1>Настройки форума</h1>
+<section class="card pad"><form method="post" action="/admin/settings" class="stack" style="max-width:560px"><input type="hidden" name="_csrf" value="<%= csrf %>">
+<label>Название</label><input name="site_name" value="<%= site.site_name %>" maxlength="40"><label>Слоган</label><input name="tagline" value="<%= site.tagline %>" maxlength="120">
+<label>IP сервера</label><input name="server_ip" value="<%= site.server_ip %>" maxlength="80"><label>Discord</label><input name="discord" value="<%= site.discord %>"><label>ВКонтакте</label><input name="vk" value="<%= site.vk %>"><label>YouTube</label><input name="youtube" value="<%= site.youtube %>">
+<label>Акцентный цвет форума</label><input type="color" name="accent" value="<%= site.accent %>">
+<label class="inline"><input type="checkbox" name="registration_open" <%= site.registration_open === '1' ? 'checked' : '' %>> Регистрация открыта</label>
+<div><button class="btn">Сохранить</button></div></form></section>
+<section class="card pad"><h3>Безопасность</h3><ul class="muted"><li>Пароли: bcrypt, блокировка аккаунта на 15 минут после 5 неверных попыток.</li><li>Лимит запросов на запись: 90 в минуту с IP; вход, регистрация и сброс: 30 за 15 минут.</li><li>Email: <%= smtpOn ? 'SMTP настроен, подтверждение включено' : 'SMTP не настроен: письма пишутся в консоль сервера, подтверждение email отключено' %>.</li><li>Права и роли проверяются на сервере при каждом действии; журнал находится в разделе «Журнал».</li></ul></section>
+<%- include('../partials/admin_foot') %>
